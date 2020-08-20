@@ -35,6 +35,10 @@ public class FilterProducerDemo {
                         "TagA",
                         "OrderId188",
                         ("HelloWorld" + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
+                /*
+                使用SQL92这种过滤方式，需要在启动broker时，配置enablePropertyFilter=true。
+                默认该参数为false。
+                 */
                 msg.putUserProperty("a", String.valueOf(i));
                 producer.send(msg, new SendCallback() {
                     @Override
