@@ -1,4 +1,4 @@
-package com.prayerlaputa.mqdemo.rocketmq.orderExample;
+package com.prayerlaputa.mqdemo.rocketmq.order;
 
 import com.prayerlaputa.mqdemo.util.ConfigUtil;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -8,6 +8,7 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -35,7 +36,15 @@ public class OrderedConsumer {
             public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs,
                                                        ConsumeOrderlyContext context) {
                 context.setAutoCommit(false);
-                System.out.printf(Thread.currentThread().getName() + " Receive New Messages: " + msgs + "%n");
+//                System.out.printf(Thread.currentThread().getName() + " Receive New Messages: " + msgs + "%n");
+                System.out.println("consume cnt=" + consumeTimes.get()  + " -----------------------------------------");
+
+                for (int i = 0; i < msgs.size(); i++) {
+                    System.out.printf("%s Receive New Messages: i=%d body=%s %n",
+                            Thread.currentThread().getName(), i, new String(msgs.get(i).getBody(), StandardCharsets.UTF_8));
+                }
+                System.out.println("-----------------------------------------");
+
                 this.consumeTimes.incrementAndGet();
                 if ((this.consumeTimes.get() % 2) == 0) {
                     return ConsumeOrderlyStatus.SUCCESS;

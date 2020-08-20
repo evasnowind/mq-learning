@@ -1,18 +1,25 @@
-package com.prayerlaputa.mqdemo.rocketmq.simpleExample;
+package com.prayerlaputa.mqdemo.rocketmq.batch;
 
 import com.prayerlaputa.mqdemo.util.ConfigUtil;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author chenglong.yu
  * created on 2020/8/12
  */
-public class RocketOneWayModeProducerDemo {
+public class BatchSmallMsgProducerDemo {
 
     public static void main(String[] args) {
-        DefaultMQProducer producer = new DefaultMQProducer("oneWayModeProducer");
+        DefaultMQProducer producer = new DefaultMQProducer("batchProducer");
 
         String ipPort = ConfigUtil.getConfigFromFile(ConfigUtil.VPS_SERVER_ROCKET_MQ_IP_PORT);
         System.out.println("ipPort=" + ipPort);
@@ -21,16 +28,18 @@ public class RocketOneWayModeProducerDemo {
 
         try {
             producer.start();
+            producer.setRetryTimesWhenSendAsyncFailed(3);
+            int messageCount = 10;
 
-            int messageCount = 100;
+            List<Message> messageList = new ArrayList<>();
             for (int i = 0; i < messageCount; i++) {
-                Message msg = new Message("TopicTest",
+                messageList.add(new Message("BatchTopic",
                         "TagA",
-                        "HelloWorld".getBytes(RemotingHelper.DEFAULT_CHARSET));
-                producer.sendOneway(msg);
+                        "OrderId188",
+                        ("HelloWorld" + i).getBytes(RemotingHelper.DEFAULT_CHARSET)));
             }
+            producer.send(messageList);
 
-            Thread.sleep(10000);
             producer.shutdown();
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,4 +1,4 @@
-package com.prayerlaputa.mqdemo.rocketmq.simpleExample;
+package com.prayerlaputa.mqdemo.rocketmq.simple;
 
 import com.prayerlaputa.mqdemo.util.ConfigUtil;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;

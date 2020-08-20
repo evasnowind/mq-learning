@@ -1,4 +1,4 @@
-package com.prayerlaputa.mqdemo.rocketmq.simpleExample;
+package com.prayerlaputa.mqdemo.rocketmq.broadcast;
 
 import com.prayerlaputa.mqdemo.util.ConfigUtil;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -6,7 +6,9 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -15,20 +17,23 @@ import java.util.List;
  * @author chenglong.yu
  * created on 2020/8/11
  */
-public class RocketConsumerDemo {
+public class BroadcastConsumerDemo {
 
 
     static int consumeCnt = 0;
 
     public static void main(String[] args) {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("rocketmq_consumer_group");
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("broadcast_consumer_group");
         String ipPort = ConfigUtil.getStringValue(ConfigUtil.VPS_SERVER_ROCKET_MQ_IP_PORT);
         System.out.println("ipPort=" + ipPort);
         consumer.setNamesrvAddr(ipPort);
 
 
+        consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+        consumer.setMessageModel(MessageModel.BROADCASTING);
+
         try {
-            consumer.subscribe("TopicTest", "*");
+            consumer.subscribe("TopicTest", "TagA || TagC || TagD");
 
             consumer.registerMessageListener(new MessageListenerConcurrently() {
                 @Override
@@ -61,6 +66,6 @@ public class RocketConsumerDemo {
             e.printStackTrace();
         }
 
-        System.out.printf("Consumer Started.%n");
+        System.out.printf("Broadcast Consumer Started.%n");
     }
 }
