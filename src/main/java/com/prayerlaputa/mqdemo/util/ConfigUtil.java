@@ -1,4 +1,4 @@
-package com.prayerlaputa.example.util;
+package com.prayerlaputa.mqdemo.util;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;

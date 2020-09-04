@@ -1,4 +1,4 @@
-package com.prayerlaputa.keytech.network.serilazation;
+package com.prayerlaputa.keytech.network.chat.serializer;
 
 /**
  * @author chenglong.yu
