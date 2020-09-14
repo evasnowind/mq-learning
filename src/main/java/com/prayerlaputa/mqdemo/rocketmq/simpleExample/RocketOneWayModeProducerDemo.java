@@ -24,7 +24,6 @@ public class RocketOneWayModeProducerDemo {
 
             int messageCount = 100;
             for (int i = 0; i < messageCount; i++) {
-                final int index = i;
                 Message msg = new Message("TopicTest",
                         "TagA",
                         "HelloWorld".getBytes(RemotingHelper.DEFAULT_CHARSET));
