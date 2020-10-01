@@ -1,20 +1,22 @@
-package com.prayerlaputa.keytech.network.chat.protocal;
+package com.prayerlaputa.keytech.network.chat.common;
+
+
+import static com.prayerlaputa.keytech.network.chat.common.MsgConstant.MSG_SESSION_ONE;
+import static com.prayerlaputa.keytech.network.chat.common.MsgConstant.MSG_SESSION_THREE;
+import static com.prayerlaputa.keytech.network.chat.common.MsgConstant.MSG_SESSION_TWO;
+import static com.prayerlaputa.keytech.network.chat.common.MsgConstant.USER_ID_LI;
+import static com.prayerlaputa.keytech.network.chat.common.MsgConstant.USER_ID_ZHANG;
+import com.prayerlaputa.keytech.network.chat.protocal.packet.MsgPacket;
 
 import java.util.HashMap;
 import java.util.Map;
-import static com.prayerlaputa.keytech.network.chat.common.MsgConst.*;
 
 /**
- * @author chenglong.yu
- * created on 2020/8/5
+ * @author switch
+ * @since 2019/10/12
  */
 public class MsgRepository {
-    private static MsgRepository instance = new MsgRepository();
-
-    public static MsgRepository getInstance() {
-        return instance;
-    }
-
+    private static MsgRepository repository = new MsgRepository();
     private static Map<Integer, MsgPacket> zhangMsgMapping;
     private static Map<Integer, MsgPacket> liMsgMapping;
 
@@ -32,6 +34,10 @@ public class MsgRepository {
 
     private MsgRepository() {
 
+    }
+
+    public static MsgRepository getInstance() {
+        return repository;
     }
 
     public MsgPacket getZhangMsgPacket(Integer sessionId) {

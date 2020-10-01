@@ -1,10 +1,12 @@
-package com.prayerlaputa.keytech.network.chat.codec;
+package com.prayerlaputa.keytech.network.chat.protocal.codec;
 
-import com.prayerlaputa.keytech.network.chat.command.Command;
-import com.prayerlaputa.keytech.network.chat.protocal.MsgPacket;
-import com.prayerlaputa.keytech.network.chat.protocal.Packet;
+
+import static com.prayerlaputa.keytech.network.chat.protocal.commond.Command.MSG;
+import com.prayerlaputa.keytech.network.chat.protocal.packet.MsgPacket;
+import com.prayerlaputa.keytech.network.chat.protocal.packet.Packet;
 import com.prayerlaputa.keytech.network.chat.serializer.Serializer;
-import com.prayerlaputa.keytech.network.chat.serializer.SerializerAlgorithm;
+import com.prayerlaputa.keytech.network.chat.serializer.impl.JSONSerializer;
+import com.prayerlaputa.keytech.network.chat.serializer.impl.KryoSerializer;
 import com.prayerlaputa.keytech.network.chat.serializer.impl.ProtoStuffSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -13,39 +15,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author chenglong.yu
- * created on 2020/8/5
- *
+ * Packet编解码类
+ * <br/>
  * 通信协议
  * 魔数0x12345678(4字节)|版本号(1字节)|序列化算法(1字节)|指令(1字节)|数据长度(4字节)|数据(N字节)
+ *
+ * @author switch
+ * @since 2019/10/12
  */
-public class PacketCodec {
-
-    private static PacketCodec instance = new PacketCodec(new ProtoStuffSerializer());
-
+public class PacketCodeC {
+    public static final PacketCodeC INSTANCE = new PacketCodeC(new ProtoStuffSerializer());
 
     private static final int MAGIC_NUMBER = 0x12345678;
-
-    private Serializer serializer;
-
-    private static final Map<Byte, Serializer> serializerMap;
     private static final Map<Byte, Class<? extends Packet>> packetTypeMap;
+    private static final Map<Byte, Serializer> serializerMap;
 
     static {
         packetTypeMap = new HashMap<>();
-        packetTypeMap.put(Command.MSG, MsgPacket.class);
+        packetTypeMap.put(MSG, MsgPacket.class);
 
         serializerMap = new HashMap<>();
+        Serializer jsonSerializer = new JSONSerializer();
+        serializerMap.put(jsonSerializer.getSerializerAlgorithm(), jsonSerializer);
         Serializer protoStuffSerializer = new ProtoStuffSerializer();
-        serializerMap.put(SerializerAlgorithm.PROTO_STUFF, protoStuffSerializer);
-
+        serializerMap.put(protoStuffSerializer.getSerializerAlgorithm(), protoStuffSerializer);
+        Serializer kryoSerializer = new KryoSerializer();
+        serializerMap.put(kryoSerializer.getSerializerAlgorithm(), kryoSerializer);
     }
 
-    public static PacketCodec getInstance() {
-        return instance;
-    }
 
-    public PacketCodec(Serializer serializer) {
+    private Serializer serializer;
+
+    public PacketCodeC(Serializer serializer) {
         this.serializer = serializer;
     }
 
@@ -65,7 +66,6 @@ public class PacketCodec {
 
         return byteBuf;
     }
-
 
     public Packet decode(ByteBuf byteBuf) {
         // 跳过 magic number

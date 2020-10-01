@@ -8,11 +8,10 @@ import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
 
 /**
- * @author chenglong.yu
- * created on 2020/8/5
+ * @author switch
+ * @since 2019/10/13
  */
 public class ProtoStuffSerializer implements Serializer {
-
     @Override
     public byte getSerializerAlgorithm() {
         return SerializerAlgorithm.PROTO_STUFF;

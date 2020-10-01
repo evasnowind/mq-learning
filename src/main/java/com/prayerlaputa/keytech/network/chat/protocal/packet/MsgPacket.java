@@ -1,19 +1,20 @@
-package com.prayerlaputa.keytech.network.chat.protocal;
+package com.prayerlaputa.keytech.network.chat.protocal.packet;
 
-import com.prayerlaputa.keytech.network.chat.command.Command;
+import static com.prayerlaputa.keytech.network.chat.protocal.commond.Command.MSG;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
- * @author chenglong.yu
- * created on 2020/8/5
+ * @author switch
+ * @since 2019/10/12
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class MsgPacket extends Packet {
-
     /**
      * 序号
      */
@@ -36,6 +37,6 @@ public class MsgPacket extends Packet {
 
     @Override
     public Byte getCommand() {
-        return Command.MSG;
+        return MSG;
     }
 }

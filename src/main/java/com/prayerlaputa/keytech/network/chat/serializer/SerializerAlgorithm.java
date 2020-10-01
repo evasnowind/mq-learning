@@ -1,11 +1,10 @@
 package com.prayerlaputa.keytech.network.chat.serializer;
 
 /**
- * @author chenglong.yu
- * created on 2020/8/5
+ * @author switch
+ * @since 2019/10/12
  */
 public interface SerializerAlgorithm {
-
     /**
      * json 序列化标识
      */

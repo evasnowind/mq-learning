@@ -1,14 +1,13 @@
-package com.prayerlaputa.keytech.network.chat.protocal;
+package com.prayerlaputa.keytech.network.chat.protocal.packet;
 
 import lombok.Data;
 
 /**
- * @author chenglong.yu
- * created on 2020/8/5
+ * @author switch
+ * @since 2019/10/12
  */
 @Data
 public abstract class Packet {
-
     /**
      * 协议版本
      */

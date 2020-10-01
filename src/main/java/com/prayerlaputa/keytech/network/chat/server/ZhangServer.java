@@ -15,45 +15,48 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author chenglong.yu
- * created on 2020/8/4
+ * @author switch
+ * @since 2019/10/12
  */
-public class NettyMsgServer {
-
+public class ZhangServer {
     private static final Map<String, Channel> CHANNEL_MAPPING = new ConcurrentHashMap<>();
 
     private static final int PORT = 18000;
 
-    public static ServerBootstrap createBootstrap() {
-        NioEventLoopGroup bossGroup = new NioEventLoopGroup();
+
+    public static void main(String[] args) {
+        ServerBootstrap bootstrap = bootstrap();
+        bind(bootstrap, PORT);
+    }
+
+    public static ServerBootstrap bootstrap() {
+        NioEventLoopGroup boosGroup = new NioEventLoopGroup();
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
-        ServerBootstrap serverBootstrap = new ServerBootstrap();
-        serverBootstrap.group(bossGroup, workerGroup)
+        ServerBootstrap bootstrap = new ServerBootstrap();
+        bootstrap.group(boosGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 1024)
-                .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.TCP_NODELAY, true)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4));
-                        socketChannel.pipeline().addLast(new NettyServerHandler());
+                    protected void initChannel(SocketChannel ch) {
+                        ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 7, 4));
+                        ch.pipeline().addLast(new ServerHandler());
                     }
                 });
-
-        return serverBootstrap;
+        return bootstrap;
     }
 
     public static ChannelFuture bind(final ServerBootstrap serverBootstrap, final int port) {
-        return serverBootstrap.bind(port)
-                .addListener(future -> {
-                    if (future.isSuccess()) {
-                        System.out.println(new Date() + ": 端口[" + port + "] 绑定成功！");
-                    } else {
-                        System.err.println("端口[" + port + "]绑定失败！");
-                    }
-                });
+        return serverBootstrap.bind(port).addListener(future -> {
+            if (future.isSuccess()) {
+                System.out.println(new Date() + ": 端口 [" + port + "] 绑定成功！");
+            } else {
+                System.err.println(" 端口 [" + port + "] 绑定失败！");
+            }
+        });
     }
 
     public static void putChannel(String host, Channel channel) {
